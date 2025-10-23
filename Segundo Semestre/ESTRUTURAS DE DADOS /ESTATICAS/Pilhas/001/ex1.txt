@@ -1,0 +1,41 @@
+Considere o seguinte conjunto de n ́umeros 1234 e as seguintes opera ̧c ̃oes:
+(a) inserir o 1 na pilha;
+(b) inserir o 2 na pilha;
+(c) retirar o 2 da pilha;
+(d) inserir o 3 na pilha;
+(e) inserir o 4 na pilha;
+(f) retirar o 4 da pilha;
+(g) retirar o 3 da pilha;
+(h) retirar o 1 da pilha.
+
+A seq ̈uˆencia de sa ́ıdas do procedimento acima  ́e 2431. Considere agora a seq ̈uˆencia 123456.
+Podemos obter as seq ̈uˆencias 325641 e 154623 utilizando um processo semelhante ao do exemplo
+anterior? Descreva o processo.
+
+seq 1
+    inserir 1
+    inserir 2
+    inserir 3
+    retirar 3
+    retirar 2
+    inserir 4
+    inserir 5
+    retirar 5
+    inserir 6
+    retirar 6
+    retirar 4
+    retirar 1
+
+seq 2
+    inserir 1
+    retirar 1
+    inserir 2
+    inserir 3
+    inserir 4
+    inserir 5
+    retirar 5
+    retirar 4
+    não é possivel completar a sequência
+    
+
+
