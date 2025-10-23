@@ -10,25 +10,25 @@ class no:
     def __init__(self, x: figurinha):
         self.dado: figurinha = x
         self.prox: no | None = None
-        self.rep: int = 0
+        self.ant: no | None = None
     
 class coleçao:
     def __init__(self):
-        '''Cria uma coleção de figurinhas'''
-        self.primeiro: no| None = None
-        self.ultimo: no | None = None
+        self.primeiro = no(figurinha(None))
+        self.ultimo = self.primeiro
+        self.primeiro.prox = None
+        self.primeiro.ant = None
 
     def colecao_vazia(self) -> bool:
         '''Verifica se a coleção esta vazia e retorna True, caso contrário retorna False.
         Exemlos:
         
         '''
-        return self.primeiro == None
+        return self.primeiro == self.ultimo
     
-    def busca(self, chave:int) -> no:
-        ''''''
-        ptr = self.primeiro
-        while (ptr != None) and (ptr.dado.valor != chave):
+    def busca(self, chave:int) -> no | None:
+        ptr = self.primeiro.prox  
+        while (ptr is not None) and (ptr.dado.valor != chave):
             ptr = ptr.prox
         return ptr
     
@@ -36,22 +36,112 @@ class coleçao:
         '''Insere uma nova figurinha a coleção, a coleção se mantém ordenada
         
         Exemplos:
-        '''
-        novo = no(x)
-        if self.busca(x.valor) == None:
-            novo.rep = 1
-            if self.colecao_vazia():
-                self.ultimo = novo
-            novo.prox = self.primeiro
-            self.primeiro = novo
-            return True
-        else:
-            novo.rep += 1
+        >>> c = colecao()
+        >>> c.insere_fig(figurinha(1))
+        >>> c.insere_fig(figurinha(3))
+        >>> c.insere_fig(figurinha(1))
+        >>> c.insere_fig(figurinha(4))
 
-    def remove_fig(self) -> bool:
+        '''
+        
+        novo = no(x)
+        if self.colecao_vazia():
+            novo.prox = self.primeiro 
+            novo.ant = self.primeiro       
+            self.primeiro.prox = novo
+            self.ultimo = novo
+        else:
+            ptr = self.primeiro.prox
+            ptr_ant = self.primeiro
+            while ptr != None and ptr.dado.valor < x.valor:
+                ptr_ant = ptr
+                ptr = ptr.prox
+            novo.prox = ptr
+            novo.ant = ptr_ant
+            ptr_ant.prox = novo
+            if ptr == None:
+                self.ultimo = novo
+            return True
+        return False  
+
+    def remove_fig(self, x: figurinha) -> bool:
+        '''Remove uma figurinha da coleção
+        
+        Exemplos:
+        '''
+        if not self.colecao_vazia():
+            rem = self.primeiro.prox
+            while rem != None and rem.dado.valor != x.valor:
+                rem = rem.prox
+            if rem == None:
+                return False
+            rem.ant.prox = rem.prox
+            if rem.prox != None:
+                rem.prox.ant = rem.ant
+            else:
+                self.ultimo = rem.ant
+            return True
+    
+        
+    def mostra_colecao(self) -> str:
+
+        if self.colecao_vazia():
+            return "[]"
+        
+        ptr = self.primeiro.prox
+        result = "["
+        while ptr != None:
+            result += str(ptr.dado.valor)
+            if ptr.prox != None:
+                result += ", "
+            ptr = ptr.prox
+        result += "]"
+        return result
+
+    
+    def figurinhas_sem_rep(self) -> str:
+        '''Gera uma string com as figurinhas presentes na coleção, nao apresenta as repetições
+        
+        Exemplos:
+        '''
+        
+        unicas = coleçao()
+        ptr = self.primeiro.prox
+
+        while ptr != None:
+            atual = ptr.dado
+            if not unicas.busca(atual.valor):
+                unicas.insere_fig(atual)
+            ptr = ptr.prox
+        return unicas.mostra_colecao()
+    
+    
+    
+    def figurinhas_rep(self) -> str:
+        '''Gera uma string com as figurinhas presentes na coleção mostrando a quantidade de repetições
+        no formato "[6(3), 9(2), 12(1)]
+        
+        Exemplos:
+        '''
+
+        cont = 0
+
+        ptr = 
+
+
+
+
+
 
 
 
         
+
+
+
+
+
+
+
 
 
