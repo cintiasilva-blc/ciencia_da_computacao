@@ -49,6 +49,7 @@ class lista:
         else:
             return False
         
+        
     def remove_ini(self) -> bool:
         if not self.vazia():
             rem = self.primeiro.prox
@@ -62,4 +63,12 @@ class lista:
             return True
         else:
             return False
+        
+    ''' rem = self.ultimo
+        self.ultimo = rem.ant
+        self.ultimo =  None 
+        rem.ant = None 
+        '''
+        
+            
         
