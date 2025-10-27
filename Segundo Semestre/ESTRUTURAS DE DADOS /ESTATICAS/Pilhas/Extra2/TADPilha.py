@@ -1,6 +1,3 @@
-'''2. Reescreva a fun ̧c ̃ao “Desempilha” para que ela desempilhe o topo da pilha e retorne o item
-desempilhado.'''
-
 from __future__ import annotations
 from dataclasses import dataclass
 from copy import deepcopy
