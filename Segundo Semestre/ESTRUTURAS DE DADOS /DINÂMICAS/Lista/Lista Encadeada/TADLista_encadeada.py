@@ -22,7 +22,7 @@ class lista:
     
     def busca(self, chave:int) -> no:
         ptr = self.primeiro
-        while (ptr != None) and (ptr.dado.valor != chave):
+        while (ptr != None) and (ptr.dado != chave):
             ptr = ptr.prox
         return ptr
     
@@ -34,7 +34,7 @@ class lista:
             return None
         
     def insere_ini(self, x:item) -> bool:
-        if self.busca(x.valor) == None:
+        if self.busca(x) == None:
             novo = no(x)
             if self.vazia():
                 self.ultimo = novo
@@ -48,10 +48,10 @@ class lista:
         if self.busca(x.valor) == None:
             novo = no(x)
             if self.vazia():
-        self.primeiro=novo
+                self.primeiro=novo
+            else:
+                self.ultimo.prox=novo
+            self.ultimo=novo
+            return True
         else:
-        self.ultimo.prox=novo
-        self.ultimo=novo
-        return True
-        else:
-        return False
+            return False
