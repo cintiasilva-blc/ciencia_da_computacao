@@ -9,6 +9,7 @@ def aplica_op(op: str, a: int, b: int) -> int:
         return a * b
     else:
         return a // b
+        
 def avalia_posfixa(expr: list[str]) -> int:
     '''Recebe uma lista de operadoeres e operandos, avalia a expressão e aplica
 
