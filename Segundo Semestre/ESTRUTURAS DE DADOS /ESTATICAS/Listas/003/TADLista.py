@@ -287,6 +287,6 @@ class lista:
 
         if (not self.cheia()) and (self.busca(x.valor) == -1):
             pos = 0
-            while pos < self.fim and self.elementos[pos].valor < x.valor:
+            while self.elementos[pos].valor < x.valor and pos < self.fim:
                 pos += 1
             return self.insere_pos(x, pos)

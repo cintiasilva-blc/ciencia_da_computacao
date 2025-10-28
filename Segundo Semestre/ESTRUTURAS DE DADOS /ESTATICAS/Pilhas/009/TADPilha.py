@@ -62,14 +62,13 @@ class pilha:
         >>> p1.empilha(item(2))
         >>> p1.empilha(item(7))
         >>> p1.desempilha()
-        7
-        >>> p1.desempilha()
+        >>> x: int = p1.consulta_topo().valor
+        >>> x
         2
         '''
         if self.vazia():
             raise ValueError('Pilha Vazia')
         else:
-            print(self.consulta_topo().valor)
             self.topo -= 1
             
     def consulta_topo(self) -> item:

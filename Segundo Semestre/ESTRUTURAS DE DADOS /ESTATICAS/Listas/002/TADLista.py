@@ -113,7 +113,7 @@ class lista:
         False
         '''
 
-        if (not self.cheia()) and (self.busca(x.valor) == -1):
+        if (not self.cheia()) and (self.busca(x) == -1):
             self.elementos[self.fim] = deepcopy(x)
             self.fim += 1
             return True
@@ -244,6 +244,7 @@ class lista:
             pos = self.busca(valor)
             self.remove_pos(pos)
             return True
+        return False
 
 if __name__ == '__main__':
     import doctest
