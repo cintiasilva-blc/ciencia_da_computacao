@@ -54,24 +54,17 @@ def separa_impar(p1: pilha):
     Elemento:  9
     '''
 
-    p = pilha(p1.tam_max)
-
+    impares = pilha(p1.tam_max)
     while not p1.vazia():
-        n: item = p1.consulta_topo()
-        if n.valor % 2 == 0:
-            p1.desempilha() 
-        else:
-            p.empilha(n)
-            p1.desempilha()
+        elemento = p1.consulta_topo()
+        if elemento.valor % 2 != 0:
+            impares.empilha(elemento)
+        p1.desempilha()
 
-    while not p.vazia():
-        m = p.consulta_topo()
-        p1.empilha(m)
-        p.desempilha()
-
-
-
-    
+    while not impares.vazia():
+        elemento = impares.consulta_topo()
+        p1.empilha(elemento)
+        impares.desempilha()
 
 
 

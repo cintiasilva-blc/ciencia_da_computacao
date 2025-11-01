@@ -79,5 +79,5 @@ class fila:
         if self.vazia():
             raise ValueError('Fila vazia')
         else:
-            return deepcopy(self.inicio.dado.valor)
+            return self.inicio.dado.valor
         

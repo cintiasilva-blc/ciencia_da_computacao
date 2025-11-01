@@ -23,12 +23,14 @@ def troca_pos(l: lista, x1: item, x2: item) -> bool:
     False
     '''
 
-    pos_x1 = l.busca(x1.valor)
-    pos_x2 = l.busca(x2.valor)
-    if pos_x1 != -1 and pos_x2 != -1:
-        aux = l.elementos[pos_x1] 
-        l.elementos[pos_x1] = l.elementos[pos_x2]
-        l.elementos[pos_x2] = aux
+    pos1 = l.busca(x1.valor)
+    pos2 = l.busca(x2.valor)
+
+    if pos1 != -1 and pos2 != -1:
+        aux = l.elementos[pos1]
+        l.elementos[pos1] = l.elementos[pos2]
+        l.elementos[pos2] = aux
         return True
     return False
+
 

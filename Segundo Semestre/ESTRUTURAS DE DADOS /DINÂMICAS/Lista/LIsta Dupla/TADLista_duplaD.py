@@ -1,3 +1,5 @@
+'''Escreva uma função que receba uma lista duplamente encadeada e rotacione a lista para a direita e esquerda, tantas vezes quanto for o valor de um inteiro n passado como parâmetro. Se o inteiro n for positivo a lista deve ser rotacionada n vezes para a direita e se for negativompara a esquerda.'''
+
 from __future__ import annotations
 from dataclasses import dataclass
 from copy import deepcopy
@@ -12,7 +14,7 @@ class no:
         self.prox: no | None = None
         self.ant: no | None = None
 
-class lista:
+class listadupla:
     def __init__(self):
         self.primeiro = no(item(None))
         self.ultimo = self.primeiro
@@ -63,12 +65,12 @@ class lista:
             return True
         else:
             return False
-        
-    ''' rem = self.ultimo
-        self.ultimo = rem.ant
-        self.ultimo =  None 
-        rem.ant = None 
-        '''
-        
+
+    
+
+
+
+
+
             
         

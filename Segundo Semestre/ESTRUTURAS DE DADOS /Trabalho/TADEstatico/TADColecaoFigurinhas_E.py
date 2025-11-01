@@ -45,7 +45,7 @@ class Colecao:
         >>> p.colecao_vazia()
         True
         '''
-        return  self.fim == 0
+        return self.fim == 0
 
 
     def insere_figurinha(self,figurinha:fig)-> bool:
@@ -195,7 +195,7 @@ class Colecao:
         return lista
 
         
-    def figurinhas_rep(self)->str:
+    def figurinhas_rep(self)-> str:
         '''Gera as figurinhas repetidas e sua quantidade( não considera a primeira ocorrÊncia ) em formato de string. Caso não haja figurinhas repetidas retorna *[]*
         Exemplo:
         >>> c = Colecao(10)
@@ -236,10 +236,62 @@ class Colecao:
         lista += ']'
         return lista
     
+    def fig_trocaveis(self, c2: Colecao) -> str:
+        '''Encontra e retorna as figurinhas repetidas que podem ser trocadas com outra coleção.
+        Exemplos:
+        >>> c = Colecao(10)
+        >>> for i in [4, 4, 5, 5, 5, 6, 7, 7]:
+        ...     c.insere_figurinha(fig(i))
+        True
+        True
+        True
+        True
+        True
+        True
+        True
+        True
+        >>> c2 = Colecao(10)
+        >>> for i in [1, 1, 2, 3, 3, 3]:
+        ...     c2.insere_figurinha(fig(i))
+        True
+        True
+        True
+        True
+        True
+        True
+        >>> x = c.fig_trocaveis(c2)
+        >>> x
+        '[4, 5, 7]'
+        >>> y = c2.fig_trocaveis(c)
+        >>> y
+        '[1, 3]'
+        '''
+        if self.colecao_vazia():
+            return '[]'
+        
+        resultado = '['
+        primeiro = True
+        i = 0
+        
+        while i < self.fim:
+            valor_atual = self.elementos[i].num_fig
+            count = 1
+            while i + count < self.fim and self.elementos[i + count].num_fig == valor_atual:
+                count += 1
+            
+            if count > 1 and c2.encontra_pos(valor_atual) == -1:
+                if not primeiro:
+                    resultado += ', '
+                resultado += str(valor_atual)
+                primeiro = False
+            
+            i += count
+        
+        resultado += ']'
+        return resultado
 
-    def identifica_rept_unicas(self,colecaoB:Colecao)->Colecao:
+    def identifica_rept_unicas(self,colecaoB:Colecao)-> str:
         '''Identifica as figurinhas repetidas desta coleção que não estão na coleção B.
-        Exemplo:
         >>> c = Colecao(10)
         >>> c.insere_figurinha(fig(1))
         True
@@ -249,15 +301,14 @@ class Colecao:
         True
         >>> c.insere_figurinha(fig(3))
         True
-        >>> c.insere_figurinha(fig(3)) 
+        >>> c.insere_figurinha(fig(3))
         True
         >>> c2 = Colecao(10)
         >>> c2.insere_figurinha(fig(2))
         True
         >>> c2.insere_figurinha(fig(4))
         True
-        >>> unicas = c.identifica_rept_unicas(c2)
-        >>> unicas.lista_figurinhas()
+        >>> c.identifica_rept_unicas(c2)
         '[1, 3]'
         >>> x = Colecao(6)
         >>> y = Colecao(6)
@@ -267,43 +318,42 @@ class Colecao:
         True
         >>> x.insere_figurinha(fig(3))
         True
-        >>> x.insere_figurinha(fig(4))
-        True
         >>> y.insere_figurinha(fig(2))
         True
         >>> y.insere_figurinha(fig(3))
         True
-        >>> y.insere_figurinha(fig(5))
-        True
-        >>> y.insere_figurinha(fig(6))
-        True
-        >>> unicas_x = x.identifica_rept_unicas(y)
-        >>> unicas_x.lista_figurinhas()
+        >>> x.identifica_rept_unicas(y)
         '[]'
         '''
+        
+        if self.colecao_vazia():
+            return '[]'
 
-        unicas = Colecao(self.tam_max)
+        resultado = '['
+        primeiro = True
         i = 0
-        while i < self.fim -1:
-            nA = self.elementos[i].num_fig
-            if self.elementos[i+1].num_fig == nA:
+
+        while i < self.fim - 1:
+            valor_atual = self.elementos[i].num_fig
+            if self.elementos[i + 1].num_fig == valor_atual:
                 existeB = False
                 j = 0
-                while j < colecaoB.fim:
-                    if colecaoB.elementos[j].num_fig == nA:
+                while j < colecaoB.fim and not existeB:
+                    if colecaoB.elementos[j].num_fig == valor_atual:
                         existeB = True
-                    j+=1
-
+                    j = j + 1
                 if not existeB:
-                    unicas.insere_figurinha(fig(nA))
-
-                while i<self.fim and self.elementos[i].num_fig == nA:
-                    i+=1
+                    if not primeiro:
+                        resultado += ', '
+                    resultado += str(valor_atual)
+                    primeiro = False
+                while i < self.fim and self.elementos[i].num_fig == valor_atual:
+                    i = i + 1
             else:
-                i+=1
+                i = i + 1
 
-        return unicas
-
+        resultado += ']'
+        return resultado
     
     def encontra_pos(self, n1:int)-> int:
         '''Procura uma figurinha na coleção pelo valor.
@@ -328,6 +378,75 @@ class Colecao:
                 return i
         return -1
     
+    def conta_elementos(self, texto: str) -> int:
+        '''Conta quantos números existem em uma string no formato "[x, y, z]".
+        Exemplo:
+        >>> c = Colecao(5)
+        >>> c.conta_elementos('[4, 5, 7]')
+        3
+        >>> c.conta_elementos('[]')
+        0
+        '''
+
+        if texto == '[]':
+            return 0
+
+        cont = 0
+        i = 0
+        dentro_num = False
+
+        while i < len(texto):
+            ch = texto[i]
+            if ch >= '0' and ch <= '9':
+                if not dentro_num:
+                    cont += 1
+                    dentro_num = True
+            else:
+                dentro_num = False
+            i += 1
+
+        return cont
+
+
+    def determina_trocas(self, colecaoB: Colecao) -> int:
+        '''Determina quantas figurinhas podem ser trocadas entre as duas coleções.
+        A troca considera apenas as figurinhas repetidas de cada coleção que o outro não possui.
+
+        Exemplos:
+        >>> c1 = Colecao(10)
+        >>> for i in [4, 4, 5, 5, 5, 6, 7, 7]:
+        ...     c1.insere_figurinha(fig(i))
+        True
+        True
+        True
+        True
+        True
+        True
+        True
+        True
+        >>> c2 = Colecao(10)
+        >>> for i in [1, 1, 2, 3, 3, 3]:
+        ...     c2.insere_figurinha(fig(i))
+        True
+        True
+        True
+        True
+        True
+        True
+        >>> c1.determina_trocas(c2)
+        2
+        '''
+        minhas_trocaveis = self.fig_trocaveis(colecaoB)
+        trocaveis_c2 = colecaoB.fig_trocaveis(self)
+
+        qtd_minhas = self.conta_elementos(minhas_trocaveis)
+        qtd_c2 = self.conta_elementos(trocaveis_c2)
+
+        if qtd_minhas < qtd_c2:
+            return qtd_minhas
+        else:
+            return qtd_c2
+
     def realiza_troca(self,colecaoB:Colecao,nA:int,nB:int):
         '''Executa uma troca simples entre duas coleções.
         Exemplo:
@@ -364,7 +483,7 @@ class Colecao:
         colecaoB.insere_figurinha(fig(nA))
 
      
-    def troca_maxima(self,colecaoB:Colecao):
+    def troca_maxima(self, colecaoB:Colecao):
         '''Realiza a troca máxima de figurinhas entre duas coleções.
         A troca considera apenas as figurinhas repetidas de cada coleção que o outro não possui.
         >>> c1 = Colecao(10)
@@ -400,22 +519,33 @@ class Colecao:
         '[1, 2, 3, 5, 6]'
         '''
 
-        unicasA = self.identifica_rept_unicas(colecaoB)
-        unicasB = colecaoB.identifica_rept_unicas(self)
+        num_trocas = self.determina_trocas(colecaoB)
+        minhas_trocaveis = self.fig_trocaveis(colecaoB)
+        trocaveis_b = colecaoB.fig_trocaveis(self)
 
+        i = 1 
+        j = 1
+        trocadas = 0
 
-        if unicasA.fim < unicasB.fim:
-            n_trocas = unicasA.fim
-        else:
-            n_trocas = unicasB.fim
+        while trocadas < num_trocas:
+            numA = 0
+            while minhas_trocaveis[i] != ',' and minhas_trocaveis[i] != ']':
+                if minhas_trocaveis[i] != ' ':
+                    numA = numA * 10 + int(minhas_trocaveis[i])
+                i += 1
+            if minhas_trocaveis[i] == ',':
+                i += 1 
+            i += 1 
 
-        for i in range(n_trocas):
-            numA = unicasA.elementos[i].num_fig
-            numB = unicasB.elementos[i].num_fig
+            numB = 0
+            while trocaveis_b[j] != ',' and trocaveis_b[j] != ']':
+                if trocaveis_b[j] != ' ':
+                    numB = numB * 10 + int(trocaveis_b[j])
+                j += 1
+            if trocaveis_b[j] == ',':
+                j += 1
+            j += 1
+
             self.realiza_troca(colecaoB, numA, numB)
+            trocadas += 1
 
-
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

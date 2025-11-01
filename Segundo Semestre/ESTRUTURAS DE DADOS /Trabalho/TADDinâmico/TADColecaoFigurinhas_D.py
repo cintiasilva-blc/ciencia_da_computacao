@@ -189,15 +189,23 @@ class ColecaoFigurinhas:
         '[1, 2, 4, 9]'
         '''
         
-        unicas = ColecaoFigurinhas()
+        if self.colecao_vazia():
+            return '[]'
+        
         ptr = self.primeiro.prox
+        resultado = '['
+        primeiro = True
 
         while ptr != None:
-            atual = ptr.dado
-            if not unicas.busca(atual.valor):
-                unicas.insere_fig(atual)
+            if ptr.ant == self.primeiro or ptr.dado.valor != ptr.ant.dado.valor:
+                if primeiro == False:
+                    resultado += ', '
+                resultado += str(ptr.dado.valor)
+                primeiro = False
             ptr = ptr.prox
-        return unicas.mostra_colecao()
+
+        resultado += ']'
+        return resultado
     
     def figurinhas_rep(self) -> str:
         '''Gera uma string com as figurinhas e a quantidade de repetidas presentes na coleção
@@ -224,18 +232,18 @@ class ColecaoFigurinhas:
             return '[]'
 
         ptr = self.primeiro.prox
-        att = ptr.dado.valor
+        atual = ptr.dado.valor
         rep = 0
         result = '['
         while ptr != None:
-            if ptr.dado.valor == att:
+            if ptr.dado.valor == atual:
                 rep += 1
             else:
-                result += str(att) + '(' + str(rep - 1) + '), '
-                att = ptr.dado.valor
+                result += str(atual) + '(' + str(rep - 1) + '), '
+                atual = ptr.dado.valor
                 rep = 1
             ptr = ptr.prox
-        result += str(att) + '(' + str(rep - 1) + ')'
+        result += str(atual) + '(' + str(rep - 1) + ')'
         result += ']'
         return result
     
@@ -271,7 +279,7 @@ class ColecaoFigurinhas:
             ptr = ptr.prox
         return cont >= 2
 
-    def fig_trocaveis(self, c2: ColecaoFigurinhas) -> ColecaoFigurinhas:
+    def fig_trocaveis(self, cB: ColecaoFigurinhas) -> str:
         '''Encontra e retorna as figurinhas repetidas que podem ser trocadas com outra coleção,
 
         Exemplos:
@@ -286,35 +294,44 @@ class ColecaoFigurinhas:
         True
         True
         True
-        >>> c2 = ColecaoFigurinhas()
+        >>> cB = ColecaoFigurinhas()
         >>> for i in [1, 1, 2, 3, 3, 3]:
-        ...     c2.insere_fig(figurinha(i))
+        ...     cB.insere_fig(figurinha(i))
         True
         True
         True
         True
         True
         True
-        >>> x = c.fig_trocaveis(c2)
-        >>> x.mostra_colecao()
+        >>> x = c.fig_trocaveis(cB)
+        >>> x
         '[4, 5, 7]'
-        >>> y = c2.fig_trocaveis(c)
-        >>> y.mostra_colecao()
+        >>> y = cB.fig_trocaveis(c)
+        >>> y
         '[1, 3]'
         '''
 
-        result = ColecaoFigurinhas()
-        ptr = self.primeiro.prox
+        if self.colecao_vazia():
+            return '[]'
         
+        ptr = self.primeiro.prox
+        resultado = '['
+        primeiro = True
+
         while ptr != None:
-            num = ptr.dado.valor
-            if (self.eh_repetida(num) and c2.busca(num) == None and result.busca(num) == None):
-                result.insere_fig(figurinha(num))
+            if ptr.ant == self.primeiro or ptr.dado.valor != ptr.ant.dado.valor:
+                num = ptr.dado.valor
+                if self.eh_repetida(num) and (cB.busca(num) == None):
+                    if not primeiro:
+                        resultado += ', '
+                    resultado += str(num)
+                    primeiro = False
             ptr = ptr.prox
-        return result
 
+        resultado += ']'
+        return resultado
 
-    def determina_trocas(self, c2: ColecaoFigurinhas) -> int:
+    def determina_trocas(self, cB: ColecaoFigurinhas) -> int:
         '''Determina quantas figurinhas podem ser trocadas entre as duas coleções, retorna a quantidade
         
         Exemplos:
@@ -329,90 +346,98 @@ class ColecaoFigurinhas:
         True
         True
         True
-        >>> c2 = ColecaoFigurinhas()
+        >>> cB = ColecaoFigurinhas()
         >>> for i in [1, 1, 2, 3, 3, 3]:
-        ...     c2.insere_fig(figurinha(i))
+        ...     cB.insere_fig(figurinha(i))
         True
         True
         True
         True
         True
         True
-        >>> c.determina_trocas(c2)
+        >>> c.determina_trocas(cB)
         2
         '''
 
-        minhas_trocaveis = self.fig_trocaveis(c2)
-        trocaveis_c2 = c2.fig_trocaveis(self)
-        
-        qtd_minhas = 0
-        ptr = minhas_trocaveis.primeiro.prox
-        while ptr != None:
-            qtd_minhas += 1
-            ptr = ptr.prox
-            
-        qtd_c2 = 0
-        ptr = trocaveis_c2.primeiro.prox
-        while ptr is not None:
-            qtd_c2 += 1
-            ptr = ptr.prox
-            
-        if qtd_minhas < qtd_c2:
-            return qtd_minhas
+        if self.colecao_vazia() or cB.colecao_vazia():
+            return 0
+
+        trocaveisA = 0
+        ptrA = self.primeiro.prox
+        while ptrA != None:
+            if (ptrA.ant == self.primeiro) or (ptrA.dado.valor != ptrA.ant.dado.valor):
+                num = ptrA.dado.valor
+                if (self.eh_repetida(num)) and (cB.busca(num) == None):
+                    trocaveisA += 1
+            ptrA = ptrA.prox
+
+        trocaveisB = 0
+        ptrB = cB.primeiro.prox
+        while ptrB is not None:
+            if (ptrB.ant == cB.primeiro) or (ptrB.dado.valor != ptrB.ant.dado.valor):
+                num = ptrB.dado.valor
+                if (cB.eh_repetida(num) )and (self.busca(num) == None):
+                    trocaveisB += 1
+            ptrB = ptrB.prox
+
+        if trocaveisA < trocaveisB:
+            return trocaveisA
         else:
-            return qtd_c2
+            return trocaveisB
 
-    def trocamax_fig(self, c2: ColecaoFigurinhas):
+    def trocamax_fig(self, cB: ColecaoFigurinhas):
         '''Realiza a troca máxima de figurinhas repetidas entre duas coleções,
-
         Exemplos:
-        >>> c1 = ColecaoFigurinhas()
-        >>> c2 = ColecaoFigurinhas()
-        >>> c1.insere_fig(figurinha(1))
+        >>> cA = ColecaoFigurinhas()
+        >>> cB = ColecaoFigurinhas()
+        >>> cA.insere_fig(figurinha(1))
         True
-        >>> c1.insere_fig(figurinha(1))  
+        >>> cA.insere_fig(figurinha(1))  
         True
-        >>> c1.insere_fig(figurinha(2))
+        >>> cA.insere_fig(figurinha(2))
         True
-        >>> c2.insere_fig(figurinha(3))
+        >>> cB.insere_fig(figurinha(3))
         True
-        >>> c2.insere_fig(figurinha(3))  
+        >>> cB.insere_fig(figurinha(3))  
         True
-        >>> c2.insere_fig(figurinha(4))
+        >>> cB.insere_fig(figurinha(4))
         True
-        >>> c1.trocamax_fig(c2)
-        >>> c1.mostra_colecao()
+        >>> cA.trocamax_fig(cB)
+        >>> cA.mostra_colecao()
         '[1, 2, 3]'
-        >>> c2.mostra_colecao()
+        >>> cB.mostra_colecao()
         '[1, 3, 4]'
         '''
     
-        minhas_trocaveis = self.fig_trocaveis(c2)
-        c2_trocaveis = c2.fig_trocaveis(self)
-        qtd_trocas = self.determina_trocas(c2)
+        
+        limite = self.determina_trocas(cB)
+        if limite == 0:
+            return None
 
-        if qtd_trocas > 0:
-            ptr_minhas = minhas_trocaveis.primeiro.prox
-            ptr_c2 = c2_trocaveis.primeiro.prox
-            
-            while ptr_minhas != None and ptr_c2 != None:
-                num = ptr_minhas.dado.valor
-                self.remove_fig(figurinha(num))
-                c2.insere_fig(figurinha(num))
-                
-                num_c2 = ptr_c2.dado.valor
-                c2.remove_fig(figurinha(num_c2))
-                self.insere_fig(figurinha(num_c2))
-                
-                ptr_minhas = ptr_minhas.prox
-                ptr_c2 = ptr_c2.prox
+        ptrA = self.primeiro.prox
+        trocas = 0
+
+        while ptrA != None and trocas < limite:
+            if ptrA.ant == self.primeiro or ptrA.dado.valor != ptrA.ant.dado.valor:
+                numA = ptrA.dado.valor
+                if self.eh_repetida(numA) and cB.busca(numA) == None:
+                    ptrB = cB.primeiro.prox
+                    enc_troca = False
+
+                    while ptrB != None and not enc_troca:
+                        if ptrB.ant == cB.primeiro or ptrB.dado.valor != ptrB.ant.dado.valor:
+                            numB = ptrB.dado.valor
+                            if cB.eh_repetida(numB) and self.busca(numB) == None:
+                                self.remove_fig(figurinha(numA))
+                                cB.insere_fig(figurinha(numA))
+                                cB.remove_fig(figurinha(numB))
+                                self.insere_fig(figurinha(numB))
+                                trocas += 1
+                                enc_troca = True
+                        ptrB = ptrB.prox
+            ptrA = ptrA.prox
 
 
-
-    
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
 
 
 

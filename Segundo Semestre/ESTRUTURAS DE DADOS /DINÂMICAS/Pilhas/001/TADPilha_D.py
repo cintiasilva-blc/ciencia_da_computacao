@@ -75,5 +75,6 @@ class pilha:
         if self.vazia():
             raise ValueError('Pilha Vazia!')
         else:
-            return deepcopy(self.topo).dado.valor
+            return deepcopy(self.topo.dado.valor)
  
+

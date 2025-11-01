@@ -18,6 +18,7 @@ def soma_elementos(f: fila) -> int:
     '''
     soma = 0
     aux = pilha()
+    
     while not f.vazia():
         elemento = f.obtem_primeiro()
         aux.empilha(item(elemento))
@@ -31,3 +32,6 @@ def soma_elementos(f: fila) -> int:
 
     return soma
     
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
